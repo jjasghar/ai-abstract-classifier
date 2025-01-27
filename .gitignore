@@ -1,0 +1,6 @@
+venv/
+pretalx.json
+__pycache__/
+logging_logger.log
+overview.csv
+config.toml
