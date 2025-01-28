@@ -18,7 +18,7 @@ def anything_llm_ai_thread_setup(unique_code):
     show_model_100_ai_written(unique_code, unique_code)
     show_model_0_ai_written(unique_code, unique_code)
 
-def create_new_anythingllm_workspace(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, name):
+def create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, name):
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
     }
@@ -96,7 +96,7 @@ def list_workspaces():
     workspaces = requests.get(f'{ANYTHINGLLM_URL}/workspaces', headers=headers)
     return workspaces
 
-def chat_with_model_in_thread(WORKSPACE_NAME, THREAD_SLUG, abstract):
+def chat_with_model_in_thread_ai(WORKSPACE_NAME, THREAD_SLUG, abstract):
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
     }

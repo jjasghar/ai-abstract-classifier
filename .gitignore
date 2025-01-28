@@ -4,3 +4,4 @@ __pycache__/
 logging_logger.log
 overview.csv
 config.toml
+.DS_Store
