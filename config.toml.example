@@ -8,3 +8,5 @@ ANYTHINGLLM_APIKEY=""
 ANYTHINGLLM_URL="http://localhost:3001/api/v1"
 
 CSV_FILE="testing_data/testing.csv_bak"
+
+SESSIONIZE_API="https://sessionize.com/api/v2/UNIQUE_ID/view/All"

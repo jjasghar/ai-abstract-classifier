@@ -11,6 +11,7 @@ import tomllib
 from lib.anything_llm_ai import anything_llm_ai_thread_setup, create_new_anythingllm_workspace_ai, create_new_workspace_thread, delete_workspace, delete_all_workspaces, list_workspaces, chat_with_model_in_thread_ai
 from lib.anything_llm_sales import anything_llm_sales_thread_setup, create_new_anythingllm_workspace_sales, create_new_workspace_thread, delete_workspace, delete_all_workspaces, list_workspaces, chat_with_model_in_thread_sales
 from lib.pretalx import write_out_data, get_submissions
+from lib.sessionize import get_submissions_sessionize
 
 start_time = datetime.now()
 logging.basicConfig(filename="log/main_logging.log", level=logging.INFO,
@@ -24,6 +25,8 @@ PRETALX_TOKEN=config["PRETALX_TOKEN"]
 PRETALX_URL=config["PRETALX_URL"]
 PRETALX_EVENT=config["PRETALX_EVENT"]
 SAVEFILE=config["SAVEFILE"]
+
+SESSIONIZE_API=config["SESSIONIZE_API"]
 
 ANYTHINGLLM_APIKEY=config["ANYTHINGLLM_APIKEY"]
 ANYTHINGLLM_URL=config["ANYTHINGLLM_URL"]
@@ -46,6 +49,7 @@ def main():
     parser.add_argument("-c", "--csv", type=str, help="csv to run against")
     parser.add_argument("-d", "--delete", action='store_true', help=f"delete workspaces in AnythingLLM from {ANYTHINGLLM_URL} api")
     parser.add_argument("-p", "--pretalx", action='store_true', help=f"pull from the pretalx {PRETALX_URL} api")
+    parser.add_argument("-s", "--sessionize", action='store_true', help=f"pull from the sessionize {SESSIONIZE_API} api")
 
     args = parser.parse_args()
 
@@ -59,6 +63,7 @@ def main():
     if args.csv:
         CSV_FILE=args.csv
         raw_data = read_csv_file(CSV_FILE)
+        backend = "the csv file you submited"
 
     if args.pretalx:
         data_pretalx = get_submissions(PRETALX_TOKEN, PRETALX_URL, PRETALX_EVENT)
@@ -68,17 +73,28 @@ def main():
             data = json.load(f)
 
         raw_data = data['results']
+        backend = f"your configured pretalx instance here {PRETALX_URL}"
+
+    if args.sessionize:
+        data_sessionize = get_submissions_sessionize(SESSIONIZE_API)
+        write_out_data(SAVEFILE, data_sessionize)
+
+        with open(SAVEFILE, 'r') as f:
+            data = json.load(f)
+
+        raw_data = data['sessions']
+        backend = f"your configured sessionize instance here {SESSIONIZE_API}"
 
     if raw_data == None:
         print("******")
-        print("You need to either input a csv, or use pretalx to get the abstracts")
+        print("You need to either input a csv, pull fom pretalx or sessionize to get the abstracts")
         print("Run the script with `-h` to give you the options")
         print("******")
         exit(1)
 
     key = input(f"""
 *****
-We are going to check the next {len(raw_data)} abstracts against the LLM now,
+We are going to check the next {len(raw_data)} abstracts from {backend} against the LLM now,
 press enter continue or 'q' to just quit...
 *****
 """)
@@ -93,8 +109,14 @@ press enter continue or 'q' to just quit...
             writer.writerow(fields)
 
         for i in raw_data:
-            ai_unique_code = f"{i['code']}-ai"
-            sales_unique_code = f"{i['code']}-sales"
+            if args.sessionize:
+                unique_code = i['id']
+                ai_unique_code = f"{i['id']}-ai"
+                sales_unique_code = f"{i['id']}-sales"
+            else:
+                unique_code = i['code']
+                ai_unique_code = f"{i['code']}-ai"
+                sales_unique_code = f"{i['code']}-sales"
 
             delete_workspace(ai_unique_code)
             create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, ai_unique_code)
@@ -110,7 +132,12 @@ press enter continue or 'q' to just quit...
             except KeyError as e:
                 description = "None"
 
-            if i['abstract'] == None or len(i['abstract']) <= len(description):
+            try:
+                abstract = i['abstract']
+            except KeyError as e:
+                abstract = None
+
+            if abstract == None or len(abstract) <= len(description):
                 abstract = i['description']
             else:
                 abstract = i['abstract']
@@ -151,7 +178,12 @@ press enter continue or 'q' to just quit...
             except KeyError as e:
                 description = "None"
 
-            if i['abstract'] == None or len(i['abstract']) <= len(description):
+            try:
+                abstract = i['abstract']
+            except KeyError as e:
+                abstract = None
+
+            if abstract == None or len(abstract) <= len(description):
                 abstract = i['description']
             else:
                 abstract = i['abstract']
@@ -180,7 +212,7 @@ press enter continue or 'q' to just quit...
 
             with open('overview.csv','a') as f:
                 writer = csv.writer(f)
-                writer.writerow([f"{i['code']}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{sales_justification}",f"{ai_justification}"])
+                writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{sales_justification}",f"{ai_justification}"])
 
 
 
