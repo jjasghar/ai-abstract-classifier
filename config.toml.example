@@ -1,6 +1,10 @@
 PRETALX_TOKEN=""
 PRETALX_URL=""
 PRETALX_EVENT=""
+
 SAVEFILE="pretalx.json"
+
 ANYTHINGLLM_APIKEY=""
 ANYTHINGLLM_URL="http://localhost:3001/api/v1"
+
+CSV_FILE=""
