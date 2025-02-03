@@ -1,4 +1,4 @@
-# pretalx-ai-validator
+# ai-abstract-classifier
 
 ## Scope
 
@@ -26,7 +26,14 @@ the working directory and do something like the following:
 First install AnythingLLM, [here](https://anythingllm.com/desktop), and configure it
 with something along these lines of [this](https://ibm.github.io/opensource-ai-workshop/lab-3/).
 
-Next run these following commands:
+**Note**: As of this release you will need to configure the model you want this to us via the
+"default" AnythingLLM configuration. It seems for _now_ you can't programaticly change the workspace
+for different models, so this is the work around.
+
+Check out [testing_notes.md](./test_data/testing_notes.md) for some of the numbers ran with other
+models on the same data.
+
+Run these following commands:
 
 ```bash
 git clone git@github.com:jjasghar/pretalx-ai-validator.git
@@ -36,7 +43,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 cp config.toml.example config.toml
 vim config.toml
-python main.py
+python main.py -h
 ```
 
 ## Utils
