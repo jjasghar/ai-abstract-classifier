@@ -1,7 +1,7 @@
 venv/
 pretalx.json
 __pycache__/
-logging_logger.log
+log/*
 overview.csv
 config.toml
 .DS_Store

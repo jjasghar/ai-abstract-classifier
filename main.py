@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import argparse
 import requests
 import json
 import os.path
@@ -12,7 +13,7 @@ from lib.anything_llm_sales import anything_llm_sales_thread_setup, create_new_a
 from lib.pretalx import write_out_data, get_submissions
 
 start_time = datetime.now()
-logging.basicConfig(filename="log/logging_logger.log", level=logging.INFO,
+logging.basicConfig(filename="log/main_logging.log", level=logging.INFO,
                     format="%(asctime)s %(levelname)s %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",)
 
@@ -27,57 +28,68 @@ SAVEFILE=config["SAVEFILE"]
 ANYTHINGLLM_APIKEY=config["ANYTHINGLLM_APIKEY"]
 ANYTHINGLLM_URL=config["ANYTHINGLLM_URL"]
 
-CSV_FILE=config['CSV_FILE']
+
+def read_csv_file(CSV_FILE):
+    with open(CSV_FILE, "r") as f:
+        data = csv.DictReader(f)
+        data_list = []
+        for row in data:
+            data_list.append(row)
+    return data_list
+
 
 def main():
+    raw_data = None
 
-    if os.path.exists(CSV_FILE):
-        with open(CSV_FILE, "r") as f:
-            data = csv.DictReader(f)
-            data_list = []
-            for row in data:
-                data_list.append(row)
-    else:
-        # need to make this optional when csv importing becomes an option
+    parser = argparse.ArgumentParser(description="Have your local LLM catigorize somethings for you")
+
+    parser.add_argument("-c", "--csv", type=str, help="csv to run against")
+    parser.add_argument("-d", "--delete", action='store_true', help=f"delete workspaces in AnythingLLM from {ANYTHINGLLM_URL} api")
+    parser.add_argument("-p", "--pretalx", action='store_true', help=f"pull from the pretalx {PRETALX_URL} api")
+
+    args = parser.parse_args()
+
+    if args.delete:
+        delete_all_workspaces() # this is here because you're lazy
+        print("*****")
+        print("Deleted all the workspaces in AnythingLLM...")
+        print("*****")
+        exit()
+
+    if args.csv:
+        CSV_FILE=args.csv
+        raw_data = read_csv_file(CSV_FILE)
+
+    if args.pretalx:
         data_pretalx = get_submissions(PRETALX_TOKEN, PRETALX_URL, PRETALX_EVENT)
-        # check if the json exists, TODO eventually make this csv or json
-        if os.path.exists(SAVEFILE):
-            with open(SAVEFILE, 'r') as f:
-                data = json.load(f)
+        write_out_data(SAVEFILE, data_pretalx)
 
-            if len(data_pretalx['results']) > len(data['results']):
-                write_out_data(SAVEFILE, data_pretalx)
-                with open(SAVEFILE, 'r') as f:
-                    data = json.load(f)
+        with open(SAVEFILE, 'r') as f:
+            data = json.load(f)
 
-    if os.path.exists(CSV_FILE):
-        raw_data = data_list
-    else:
         raw_data = data['results']
+
+    if raw_data == None:
+        print("******")
+        print("You need to either input a csv, or use pretalx to get the abstracts")
+        print("Run the script with `-h` to give you the options")
+        print("******")
+        exit(1)
 
     key = input(f"""
 *****
 We are going to check the next {len(raw_data)} abstracts against the LLM now,
-press enter continue or 'd' to quit and delete ALL workspaces or 'q' to just quit...
+press enter continue or 'q' to just quit...
 *****
 """)
     if key == 'q':
         exit()
-    elif key == 'd':
-        delete_all_workspaces() # this is here because you're lazy
-        print("*****")
-        print("Deleted all the workspaces in AnythingLLM for you. You need to restart the program...")
-        print("*****")
-        exit()
     else:
-
         with open('overview.csv','w', newline='') as f:
             writer = csv.writer(f)
 
             fields = ["ai_unique_code","title","ai_score","sales_score","sales_justification","ai_justification"]
             writer.writerow(fields)
-
-
 
         for i in raw_data:
             ai_unique_code = f"{i['code']}-ai"
