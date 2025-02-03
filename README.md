@@ -8,7 +8,7 @@ is a possible sales pitch.
 It gives a file called `overview.csv` with a confidence score of up to `100` if it's been AI or
 too "sales-y."
 
-You can also inject a `csv` into this instead of reading the API. Take a look at [test_data/testing.csv_bak](./test_data/testing.csv_bak) as an example. Take a look at the `config.toml.example` for where to configure the `csv`.
+You can also inject a `csv` into this instead of reading the API. Take a look at [test_data/testing.csv](./test_data/testing.csv) as an example. Take a look at the `config.toml.example` for where to configure the `csv`.
 
 **NOTE**: This is `,` seporated for the time being, so you'll need to remove all the `,` from the actual abstracts so it can be parsed correctly.
 

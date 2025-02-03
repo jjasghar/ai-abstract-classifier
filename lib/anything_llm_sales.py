@@ -73,7 +73,7 @@ def show_model_devopsisdead_sales(WORKSPACE_NAME, THREAD_SLUG):
     return abstract_response
 
 def show_model_logging_sales(WORKSPACE_NAME, THREAD_SLUG):
-    with open('chat_primes/50_logging_sales.json', 'r') as f:
+    with open('chat_primes/jsons/50_logging_sales.json', 'r') as f:
         data = json.load(f)
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
@@ -87,7 +87,7 @@ def show_model_logging_sales(WORKSPACE_NAME, THREAD_SLUG):
     return abstract_response
 
 def show_model_pulumi_sales(WORKSPACE_NAME, THREAD_SLUG):
-    with open('chat_primes/75_pulumi_sales.json', 'r') as f:
+    with open('chat_primes/jsons/75_pulumi_sales.json', 'r') as f:
         data = json.load(f)
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
