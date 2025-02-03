@@ -45,7 +45,7 @@ def chat_with_model(WORKSPACE_NAME):
     requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/chat', headers=headers, data=data)
 
 def show_model_thebigai_sales(WORKSPACE_NAME, THREAD_SLUG):
-    with open('chat_primes/100_thebigai_sales.json', 'r') as f:
+    with open('chat_primes/jsons/100_thebigai_sales.json', 'r') as f:
         data = json.load(f)
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
@@ -59,7 +59,7 @@ def show_model_thebigai_sales(WORKSPACE_NAME, THREAD_SLUG):
     return abstract_response
 
 def show_model_devopsisdead_sales(WORKSPACE_NAME, THREAD_SLUG):
-    with open('chat_primes/100_devopsisdead_sales.json', 'r') as f:
+    with open('chat_primes/jsons/100_devopsisdead_sales.json', 'r') as f:
         data = json.load(f)
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
@@ -99,20 +99,6 @@ def show_model_pulumi_sales(WORKSPACE_NAME, THREAD_SLUG):
     }
     abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
     return abstract_response
-#
-#def show_model_0_ai_written(WORKSPACE_NAME, THREAD_SLUG):
-#    with open('chat_primes/0_human_written.json', 'r') as f:
-#        data = json.load(f)
-#    headers = {
-#            'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
-#    }
-#    data = {
-#       "message": f"The following is an abstract written 0% by an AI, it has the title of: {data['title']} and the following is the abstract. This is a good example of something that is 0% written by AI, and completely written by a human. Confirm that you understand that this is written 100% by a human and is 0% written by AI. Give a justification on why it is 100% written by a human. \n\n\n ------ \n {data['abstract']}.",
-#       "userId": 1,
-#       "mode": "chat",
-#    }
-#    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-#    return abstract_response
 
 def create_new_workspace_thread(WORKSPACE_NAME, THREAD_SLUG):
     headers = {

@@ -9,9 +9,6 @@ with open("config.toml", "rb") as f:
 ANYTHINGLLM_APIKEY=config["ANYTHINGLLM_APIKEY"]
 ANYTHINGLLM_URL=config["ANYTHINGLLM_URL"]
 
-#WORKSPACE_NAME=config["WORKSPACE_NAME"]
-#THREAD_SLUG=config["THREAD_SLUG"]
-
 def anything_llm_ai_thread_setup(unique_code):
     chat_with_model(unique_code)
     create_new_workspace_thread(unique_code,unique_code)
@@ -46,7 +43,7 @@ def chat_with_model(WORKSPACE_NAME):
     requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/chat', headers=headers, data=data)
 
 def show_model_100_ai_written(WORKSPACE_NAME, THREAD_SLUG):
-    with open('chat_primes/100_chatgpt.json', 'r') as f:
+    with open('chat_primes/jsons/100_chatgpt.json', 'r') as f:
         data = json.load(f)
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
@@ -60,7 +57,7 @@ def show_model_100_ai_written(WORKSPACE_NAME, THREAD_SLUG):
     return abstract_response
 
 def show_model_0_ai_written(WORKSPACE_NAME, THREAD_SLUG):
-    with open('chat_primes/0_human_written.json', 'r') as f:
+    with open('chat_primes/jsons/0_human_written.json', 'r') as f:
         data = json.load(f)
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"

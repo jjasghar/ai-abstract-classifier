@@ -3,13 +3,15 @@
 ## Scope
 
 This is an application that takes [AnythingLLM][anythingllm] and a selection of [abstracts][abstracts]
-and asks a local LLM ([granite][granite] ideally) if the abstract has been written by an AI and (soon)
-or is a possible sales pitch.
+and asks a local LLM ([granite][granite] ideally) if the abstract has been written by an AI and/or
+is a possible sales pitch.
 It gives a file called `overview.csv` with a confidence score of up to `100` if it's been AI or
 too "sales-y."
 
-You can also inject a `csv` into this instead of scraping an API. Take a look at [test_data/testing.csv_bak](./test_data/testing.csv_bak) as an example. Take a look at the `config.toml.example` for where to configure the `csv`.
+You can also inject a `csv` into this instead of reading the API. Take a look at [test_data/testing.csv_bak](./test_data/testing.csv_bak) as an example. Take a look at the `config.toml.example` for where to configure the `csv`.
+
 **NOTE**: This is `,` seporated for the time being, so you'll need to remove all the `,` from the actual abstracts so it can be parsed correctly.
+
 The sections that are needed the `csv` are as follows:
 - code
 - title
@@ -25,6 +27,7 @@ First install AnythingLLM, [here](https://anythingllm.com/desktop), and configur
 with something along these lines of [this](https://ibm.github.io/opensource-ai-workshop/lab-3/).
 
 Next run these following commands:
+
 ```bash
 git clone git@github.com:jjasghar/pretalx-ai-validator.git
 cd pretalx-ai-validator
@@ -35,6 +38,10 @@ cp config.toml.example config.toml
 vim config.toml
 python main.py
 ```
+
+## Utils
+
+There is a [jsons_to_markdown.py](./utils/jsons_to_markdown.py) to convert the [chat_primes](./chat_primes/jsons/) to readable format(s).
 
 ## License & Authors
 
