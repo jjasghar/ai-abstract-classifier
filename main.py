@@ -85,6 +85,7 @@ press enter continue or 'q' to just quit...
     if key == 'q':
         exit()
     else:
+        print("Running...")
         with open('overview.csv','w', newline='') as f:
             writer = csv.writer(f)
 
@@ -122,19 +123,19 @@ press enter continue or 'q' to just quit...
             try:
                 ai_score = int(abstract_response.json()['textResponse'].partition("%")[0].strip())
                 ai_justification = abstract_response.json()['textResponse'].partition("%")[2].strip()
-            except:
-                ai_score = int(abstract_response.json()['textResponse'].partition(".")[0].strip())
-                ai_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
 
-            if ai_score >= 90:
-                print("")
-                print("****AI Suspect****")
-                print(f"TITLE: {i['title']}")
-                print(f"UNIQUE CODE: {ai_unique_code}")
-                print(f"SCORE: {ai_score}")
-                print(f"JUSTIFICATION: {ai_justification}")
-                print("*******")
-                print("")
+                if ai_score >= 90:
+                    print("")
+                    print("****AI Suspect****")
+                    print(f"TITLE: {i['title']}")
+                    print(f"UNIQUE CODE: {ai_unique_code}")
+                    print(f"SCORE: {ai_score}")
+                    print(f"JUSTIFICATION: {ai_justification}")
+                    print("*******")
+                    print("")
+            except:
+                ai_score = "n/a"
+                ai_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
 
             delete_workspace(sales_unique_code)
             create_new_anythingllm_workspace_sales(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, sales_unique_code)
@@ -163,19 +164,19 @@ press enter continue or 'q' to just quit...
             try:
                 sales_score = int(abstract_response.json()['textResponse'].partition("%")[0].strip())
                 sales_justification = abstract_response.json()['textResponse'].partition("%")[2].strip()
-            except:
-                sales_score = int(abstract_response.json()['textResponse'].partition(".")[0].strip())
-                sales_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
 
-            if sales_score > 75:
-                print("")
-                print("****Sales Pitch Suspect****")
-                print(f"TITLE: {i['title']}")
-                print(f"UNIQUE CODE: {sales_unique_code}")
-                print(f"SCORE: {sales_score}")
-                print(f"JUSTIFICATION: {sales_justification}")
-                print("*******")
-                print("")
+                if sales_score > 75:
+                    print("")
+                    print("****Sales Pitch Suspect****")
+                    print(f"TITLE: {i['title']}")
+                    print(f"UNIQUE CODE: {sales_unique_code}")
+                    print(f"SCORE: {sales_score}")
+                    print(f"JUSTIFICATION: {sales_justification}")
+                    print("*******")
+                    print("")
+            except:
+                sales_score = "n/a"
+                sales_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
 
             with open('overview.csv','a') as f:
                 writer = csv.writer(f)
