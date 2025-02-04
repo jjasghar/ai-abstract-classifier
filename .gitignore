@@ -1,5 +1,6 @@
 venv/
 pretalx.json
+sessionize.json
 __pycache__/
 log/*
 overview.csv
