@@ -50,6 +50,7 @@ def main():
     parser.add_argument("-d", "--delete", action='store_true', help=f"delete workspaces in AnythingLLM from {ANYTHINGLLM_URL} api")
     parser.add_argument("-p", "--pretalx", action='store_true', help=f"pull from the pretalx {PRETALX_URL} api")
     parser.add_argument("-s", "--sessionize", action='store_true', help=f"pull from the sessionize {SESSIONIZE_API} api")
+    parser.add_argument("-w", "--workspace", action='store_true', help=f"set up a workspace in AnythingLLM at {ANYTHINGLLM_URL}")
 
     args = parser.parse_args()
 
@@ -84,6 +85,17 @@ def main():
 
         raw_data = data['sessions']
         backend = f"your configured sessionize instance here {SESSIONIZE_API}"
+
+    if args.workspace:
+        print("*****")
+        print(f"Setting up a 'one-off' workspace for you in AnythingLLM at {ANYTHINGLLM_URL}...it can take a second...")
+        print("*****")
+        create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, "one-off-ai")
+        anything_llm_ai_thread_setup("one-off-ai")
+        create_new_anythingllm_workspace_sales(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, "one-off-sales")
+        anything_llm_sales_thread_setup("one-off-sales")
+        exit()
+
 
     if raw_data == None:
         print("******")
