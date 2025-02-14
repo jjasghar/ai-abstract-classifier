@@ -8,7 +8,11 @@ is a possible sales pitch.
 It gives a file called `overview.csv` with a confidence score of up to `100` if it's been AI or
 too "sales-y."
 
-You can also inject a `csv` into this instead of reading the API. Take a look at [test_data/testing.csv](./test_data/testing.csv) as an example. Take a look at the `config.toml.example` for where to configure the `csv`.
+You can also inject a `csv` into this instead of reading an API, either [pretalx][pretalx] or [sessionize][sessionize] for the time being.
+
+## CSV notes
+
+Take a look at [test_data/testing.csv](./test_data/testing.csv) as an example. You run it via `python main.py -c CSV_FILE`, check `python main.py -h` for help.
 
 **NOTE**: This is `,` seporated for the time being, so you'll need to remove all the `,` from the actual abstracts so it can be parsed correctly.
 
@@ -77,3 +81,5 @@ limitations under the License.
 [anythingllm]: https://github.com/Mintplex-Labs/anything-llm
 [abstracts]: https://talks.devopsdays.org/devopsdays-austin-2024/cfp
 [granite]: http://ollama.com/library/granite3.1-dense
+[sessionize]: https://sessionize.com
+[pretalx]: https://pretalx.com/p/about/
