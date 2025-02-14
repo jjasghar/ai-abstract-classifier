@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import requests
 import json
 import tomllib
@@ -45,8 +44,7 @@ def show_model_thebigai_sales(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def show_model_devopsisdead_sales(WORKSPACE_NAME, THREAD_SLUG):
     with open('chat_primes/jsons/100_devopsisdead_sales.json', 'r') as f:
@@ -59,8 +57,7 @@ def show_model_devopsisdead_sales(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def show_model_logging_sales(WORKSPACE_NAME, THREAD_SLUG):
     with open('chat_primes/jsons/50_logging_sales.json', 'r') as f:
@@ -73,8 +70,7 @@ def show_model_logging_sales(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def show_model_pulumi_sales(WORKSPACE_NAME, THREAD_SLUG):
     with open('chat_primes/jsons/75_pulumi_sales.json', 'r') as f:
@@ -87,8 +83,7 @@ def show_model_pulumi_sales(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def chat_with_model_in_thread_sales(WORKSPACE_NAME, THREAD_SLUG, abstract):
     headers = {

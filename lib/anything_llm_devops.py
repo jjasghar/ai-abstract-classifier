@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import requests
 import json
 import tomllib
@@ -11,6 +10,7 @@ ANYTHINGLLM_APIKEY=config["ANYTHINGLLM_APIKEY"]
 ANYTHINGLLM_URL=config["ANYTHINGLLM_URL"]
 
 def anything_llm_devops_thread_setup(unique_code):
+    """This is the wrapper function to get the DevOps thread set up"""
     chat_with_model(unique_code)
     create_new_workspace_thread(unique_code,unique_code)
     show_model_engineering_leadership_devops(unique_code,unique_code)
@@ -18,6 +18,7 @@ def anything_llm_devops_thread_setup(unique_code):
     show_model_pitch_bad_devops(unique_code,unique_code)
 
 def create_new_anythingllm_workspace_devops(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, name):
+    """This creates the workspace with the specific prompt for DevOps checking"""
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
     }
@@ -34,6 +35,7 @@ def create_new_anythingllm_workspace_devops(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL,
     requests.post(f'{ANYTHINGLLM_URL}/workspace/new', headers=headers, data=data)
 
 def show_model_engineering_leadership_devops(WORKSPACE_NAME, THREAD_SLUG):
+    """This gives a '100%' accepted abstract to AnythingLLM"""
     with open('chat_primes/jsons/100_engineering_leadership.json', 'r') as f:
         data = json.load(f)
     headers = {
@@ -44,10 +46,10 @@ def show_model_engineering_leadership_devops(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def show_model_mlops_devops(WORKSPACE_NAME, THREAD_SLUG):
+    """This gives a '100%' accepted abstract to AnythingLLM"""
     with open('chat_primes/jsons/100_mlops_devops.json', 'r') as f:
         data = json.load(f)
     headers = {
@@ -58,10 +60,10 @@ def show_model_mlops_devops(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def show_model_pitch_bad_devops(WORKSPACE_NAME, THREAD_SLUG):
+    """This gives a '0%' accepted abstract to AnythingLLM"""
     with open('chat_primes/jsons/0_bad_devops.json', 'r') as f:
         data = json.load(f)
     headers = {
@@ -72,10 +74,10 @@ def show_model_pitch_bad_devops(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def chat_with_model_in_thread_devops(WORKSPACE_NAME, THREAD_SLUG, abstract):
+    """This gives the default message for the abstract taken from the collection to AnythingLLM for DevOps checking"""
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
     }

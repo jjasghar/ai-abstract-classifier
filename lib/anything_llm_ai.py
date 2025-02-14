@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import requests
 import json
 import tomllib
@@ -11,12 +10,14 @@ ANYTHINGLLM_APIKEY=config["ANYTHINGLLM_APIKEY"]
 ANYTHINGLLM_URL=config["ANYTHINGLLM_URL"]
 
 def anything_llm_ai_thread_setup(unique_code):
+    """This is the wrapper function to get the AI thread set up"""
     chat_with_model(unique_code)
     create_new_workspace_thread(unique_code,unique_code)
     show_model_100_ai_written(unique_code, unique_code)
     show_model_0_ai_written(unique_code, unique_code)
 
 def create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, name):
+    """This creates the workspace with the specific prompt for AI checking"""
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
     }
@@ -33,6 +34,7 @@ def create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, nam
     requests.post(f'{ANYTHINGLLM_URL}/workspace/new', headers=headers, data=data)
 
 def show_model_100_ai_written(WORKSPACE_NAME, THREAD_SLUG):
+    """This gives a '100%' AI written abstract to AnythingLLM"""
     with open('chat_primes/jsons/100_chatgpt.json', 'r') as f:
         data = json.load(f)
     headers = {
@@ -43,10 +45,10 @@ def show_model_100_ai_written(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def show_model_0_ai_written(WORKSPACE_NAME, THREAD_SLUG):
+    """This gives a '0%' AI written abstract to AnythingLLM"""
     with open('chat_primes/jsons/0_human_written.json', 'r') as f:
         data = json.load(f)
     headers = {
@@ -57,11 +59,10 @@ def show_model_0_ai_written(WORKSPACE_NAME, THREAD_SLUG):
        "userId": 1,
        "mode": "chat",
     }
-    abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
-    return abstract_response
-
+    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
 
 def chat_with_model_in_thread_ai(WORKSPACE_NAME, THREAD_SLUG, abstract):
+    """This gives the default message for the abstract taken from the collection to AnythingLLM for AI checking"""
     headers = {
             'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
     }

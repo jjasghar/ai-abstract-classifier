@@ -41,15 +41,14 @@ SESSIONIZE_API=config["SESSIONIZE_API"]
 ANYTHINGLLM_APIKEY=config["ANYTHINGLLM_APIKEY"]
 ANYTHINGLLM_URL=config["ANYTHINGLLM_URL"]
 
-
-def read_csv_file(CSV_FILE):
+def read_csv_file(CSV_FILE) -> list:
+    """This pulls in the csv file and creates it as a list for the application"""
     with open(CSV_FILE, "r") as f:
         data = csv.DictReader(f)
         data_list = []
         for row in data:
             data_list.append(row)
     return data_list
-
 
 def main():
     raw_data = None
@@ -131,7 +130,7 @@ press enter continue or 'q' to just quit...
             writer = csv.writer(f)
 
             if args.devops:
-                fields = ["ai_unique_code","title","ai_score","sales_score","accept_score","sales_justification","accept_justification","ai_justification"]
+                fields = ["ai_unique_code","title","ai_score","sales_score","devops_score","sales_justification","devops_justification","ai_justification"]
             else:
                 fields = ["ai_unique_code","title","ai_score","sales_score","sales_justification","ai_justification"]
 
@@ -148,6 +147,9 @@ press enter continue or 'q' to just quit...
                 ai_unique_code = f"{i['code']}-ai"
                 sales_unique_code = f"{i['code']}-sales"
                 devops_unique_code = f"{i['code']}-devops"
+
+         #### FIXME: This all needs to be broken out, this is way way too long
+         #### to read.
 
             delete_workspace(ai_unique_code)
             create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, ai_unique_code)
@@ -271,26 +273,26 @@ press enter continue or 'q' to just quit...
                 logging.info("*******")
                 logging.info("")
                 try:
-                    accept_score = int(devops_abstract_response.json()['textResponse'].partition("%")[0].strip())
-                    accept_justification = devops_abstract_response.json()['textResponse'].partition("%")[2].strip()
+                    devops_score = int(devops_abstract_response.json()['textResponse'].partition("%")[0].strip())
+                    devops_justification = devops_abstract_response.json()['textResponse'].partition("%")[2].strip()
 
-                    if accept_score > 90:
+                    if devops_score > 90:
                         print("")
                         print("!!!!!High possibility of Acceptance!!!!!")
                         print(f"TITLE: {i['title']}")
                         print(f"UNIQUE CODE: {devops_unique_code}")
-                        print(f"SCORE: {accept_score}")
-                        print(f"JUSTIFICATION: {accept_justification}")
+                        print(f"SCORE: {devops_score}")
+                        print(f"JUSTIFICATION: {devops_justification}")
                         print("*******")
                         print("")
                 except:
-                    accept_score = "n/a"
-                    accept_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
+                    devops_score = "n/a"
+                    devops_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
 
             with open('overview.csv','a') as f:
                 writer = csv.writer(f)
                 if args.devops:
-                    writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{accept_score}",f"{sales_justification}",f"{accept_justification}",f"{ai_justification}"])
+                    writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{devops_score}",f"{sales_justification}",f"{devops_justification}",f"{ai_justification}"])
                 else:
                     writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{sales_justification}",f"{ai_justification}"])
 
