@@ -2,6 +2,7 @@
 import requests
 import json
 import tomllib
+from lib.utils import create_new_workspace_thread, chat_with_model
 
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
@@ -31,17 +32,6 @@ def create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, nam
     }
     requests.post(f'{ANYTHINGLLM_URL}/workspace/new', headers=headers, data=data)
 
-def chat_with_model(WORKSPACE_NAME):
-    headers = {
-            'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
-    }
-    data = {
-       "message": "What is Magic The Gathering?",
-       "mode": "chat",
-       "sessionId": "identifier-to-partition-chats-by-external-id",
-    }
-    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/chat', headers=headers, data=data)
-
 def show_model_100_ai_written(WORKSPACE_NAME, THREAD_SLUG):
     with open('chat_primes/jsons/100_chatgpt.json', 'r') as f:
         data = json.load(f)
@@ -70,28 +60,6 @@ def show_model_0_ai_written(WORKSPACE_NAME, THREAD_SLUG):
     abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
     return abstract_response
 
-def create_new_workspace_thread(WORKSPACE_NAME, THREAD_SLUG):
-    headers = {
-            'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
-    }
-    data = {
-       "name": WORKSPACE_NAME.lower(),
-       "slug": THREAD_SLUG.lower()
-    }
-    requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/new', headers=headers, data=data)
-
-def delete_workspace(WORKSPACE_NAME):
-    headers = {
-            'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
-    }
-    requests.delete(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME}', headers=headers)
-
-def list_workspaces():
-    headers = {
-            'Authorization': f"Bearer {ANYTHINGLLM_APIKEY}"
-    }
-    workspaces = requests.get(f'{ANYTHINGLLM_URL}/workspaces', headers=headers)
-    return workspaces
 
 def chat_with_model_in_thread_ai(WORKSPACE_NAME, THREAD_SLUG, abstract):
     headers = {
@@ -104,8 +72,3 @@ def chat_with_model_in_thread_ai(WORKSPACE_NAME, THREAD_SLUG, abstract):
     }
     abstract_response = requests.post(f'{ANYTHINGLLM_URL}/workspace/{WORKSPACE_NAME.lower()}/thread/{THREAD_SLUG.lower()}/chat', headers=headers, data=data)
     return abstract_response
-
-def delete_all_workspaces():
-    workspaces = list_workspaces()
-    for i in workspaces.json()['workspaces']:
-        delete_workspace(i['slug'])
