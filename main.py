@@ -1,5 +1,12 @@
 #!/usr/bin/python
 
+import os.path
+if not os.path.exists("config.toml"):
+    print("*****")
+    print("You need to have a config.toml for this application to work, check config.toml.example for options")
+    print("*****")
+    exit(1)
+
 import argparse
 import requests
 import json
@@ -19,6 +26,7 @@ start_time = datetime.now()
 logging.basicConfig(filename="log/main_logging.log", level=logging.INFO,
                     format="%(asctime)s %(levelname)s %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",)
+
 
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
