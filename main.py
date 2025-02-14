@@ -10,6 +10,7 @@ import csv
 import tomllib
 from lib.anything_llm_ai import anything_llm_ai_thread_setup, create_new_anythingllm_workspace_ai, create_new_workspace_thread, delete_workspace, delete_all_workspaces, list_workspaces, chat_with_model_in_thread_ai
 from lib.anything_llm_sales import anything_llm_sales_thread_setup, create_new_anythingllm_workspace_sales, create_new_workspace_thread, delete_workspace, delete_all_workspaces, list_workspaces, chat_with_model_in_thread_sales
+from lib.anything_llm_devops import anything_llm_devops_thread_setup, create_new_anythingllm_workspace_devops, create_new_workspace_thread, delete_workspace, delete_all_workspaces, list_workspaces, chat_with_model_in_thread_devops
 from lib.pretalx import write_out_data, get_submissions
 from lib.sessionize import get_submissions_sessionize
 
@@ -51,6 +52,7 @@ def main():
     parser.add_argument("-p", "--pretalx", action='store_true', help=f"pull from the pretalx {PRETALX_URL} api")
     parser.add_argument("-s", "--sessionize", action='store_true', help=f"pull from the sessionize {SESSIONIZE_API} api")
     parser.add_argument("-w", "--workspace", action='store_true', help=f"set up a workspace in AnythingLLM at {ANYTHINGLLM_URL}")
+    parser.add_argument("--devops", action='store_true', help=f"run the devopsdays checks against the abstracts")
 
     args = parser.parse_args()
 
@@ -94,6 +96,8 @@ def main():
         anything_llm_ai_thread_setup("one-off-ai")
         create_new_anythingllm_workspace_sales(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, "one-off-sales")
         anything_llm_sales_thread_setup("one-off-sales")
+        create_new_anythingllm_workspace_devops(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, "one-off-devops")
+        anything_llm_sales_thread_setup("one-off-devops")
         exit()
 
 
@@ -117,7 +121,11 @@ press enter continue or 'q' to just quit...
         with open('overview.csv','w', newline='') as f:
             writer = csv.writer(f)
 
-            fields = ["ai_unique_code","title","ai_score","sales_score","sales_justification","ai_justification"]
+            if args.devops:
+                fields = ["ai_unique_code","title","ai_score","sales_score","accept_score","sales_justification","accept_justification","ai_justification"]
+            else:
+                fields = ["ai_unique_code","title","ai_score","sales_score","sales_justification","ai_justification"]
+
             writer.writerow(fields)
 
         for i in raw_data:
@@ -125,10 +133,12 @@ press enter continue or 'q' to just quit...
                 unique_code = i['id']
                 ai_unique_code = f"{i['id']}-ai"
                 sales_unique_code = f"{i['id']}-sales"
+                devops_unique_code = f"{i['id']}-devops"
             else:
                 unique_code = i['code']
                 ai_unique_code = f"{i['code']}-ai"
                 sales_unique_code = f"{i['code']}-sales"
+                devops_unique_code = f"{i['code']}-devops"
 
             delete_workspace(ai_unique_code)
             create_new_anythingllm_workspace_ai(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, ai_unique_code)
@@ -222,10 +232,58 @@ press enter continue or 'q' to just quit...
                 sales_score = "n/a"
                 sales_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
 
+            if args.devops:
+                delete_workspace(devops_unique_code)
+                create_new_anythingllm_workspace_devops(ANYTHINGLLM_APIKEY, ANYTHINGLLM_URL, devops_unique_code)
+
+                anything_llm_devops_thread_setup(devops_unique_code)
+
+                logging.info("")
+                logging.info("*******")
+                logging.info(f"TITLE: {i['title']}")
+
+                try:
+                    description = i['description']
+                except KeyError as e:
+                    description = "None"
+
+                try:
+                    abstract = i['abstract']
+                except KeyError as e:
+                    abstract = None
+
+                if abstract == None or len(abstract) <= len(description):
+                    abstract = i['description']
+                else:
+                    abstract = i['abstract']
+                devops_abstract_response = chat_with_model_in_thread_devops(devops_unique_code, devops_unique_code, abstract)
+                devops_justification = devops_abstract_response.json()['textResponse']
+                logging.info(justification)
+                logging.info("*******")
+                logging.info("")
+                try:
+                    accept_score = int(devops_abstract_response.json()['textResponse'].partition("%")[0].strip())
+                    accept_justification = devops_abstract_response.json()['textResponse'].partition("%")[2].strip()
+
+                    if accept_score > 90:
+                        print("")
+                        print("!!!!!High possibility of Acceptance!!!!!")
+                        print(f"TITLE: {i['title']}")
+                        print(f"UNIQUE CODE: {devops_unique_code}")
+                        print(f"SCORE: {accept_score}")
+                        print(f"JUSTIFICATION: {accept_justification}")
+                        print("*******")
+                        print("")
+                except:
+                    accept_score = "n/a"
+                    accept_justification = abstract_response.json()['textResponse'].partition(".")[2].strip()
+
             with open('overview.csv','a') as f:
                 writer = csv.writer(f)
-                writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{sales_justification}",f"{ai_justification}"])
-
+                if args.devops:
+                    writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{accept_score}",f"{sales_justification}",f"{accept_justification}",f"{ai_justification}"])
+                else:
+                    writer.writerow([f"{unique_code}",f"{i['title']}",f"{ai_score}",f"{sales_score}",f"{sales_justification}",f"{ai_justification}"])
 
 
         print(f"This took {datetime.now() - start_time} to run")
