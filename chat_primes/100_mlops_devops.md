@@ -1,0 +1,5 @@
+# A Tale of Two Ops: How MLOps can learn from DevOps
+
+## Abstract
+In this talk, we'll compare DevOps and MLOps, discussing their evolution and key differences. We'll examine how MLOps teams face unique challenges managing complex machine learning models and data pipelines, and how they can benefit from DevOps practices and tools. We'll explore the similarities and overlaps between the two fields, and show how MLOps can leverage DevOps' best practices to improve their workflows' efficiency, reliability, and scalability. In addition, we'll discuss some of the common tools and practices that are essential in the MLOps space, and that DevOps and SRE teams should be aware of. By the end of the talk, attendees will have a better understanding of the practical ways in which MLOps and DevOps intersect, and how both fields can learn from each other to improve their workflows and drive innovation in the broader field of software engineering.
+    
